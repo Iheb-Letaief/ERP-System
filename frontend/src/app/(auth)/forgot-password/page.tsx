@@ -7,12 +7,16 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import Link from 'next/link';
 import '../../i18n';
+import {useRouter} from "next/navigation";
 
 export default function ForgotPassword() {
     const { t } = useTranslation();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
 
     const schema = yup.object({
         email: yup.string().email(t('auth.forgotPassword.error.email')).required(t('auth.forgotPassword.error.required')),
@@ -35,6 +39,8 @@ export default function ForgotPassword() {
                 language: t('auth.forgotPassword.language', { defaultValue: 'en' }) === 'fr' ? 'fr' : 'en',
             });
             setSuccess(t('auth.forgotPassword.success'));
+            setTimeout(() => router.push("/login"), 3000);
+
         } catch (err) {
             setError(t('auth.forgotPassword.error.userNotFound'));
         } finally {

@@ -44,7 +44,7 @@ export const en = {
             login1: 'Forget it, ',
             login2: 'send me back ',
             login3: 'to the login page.',
-            success: 'Password reset email sent',
+            success: 'Password reset email sent. Check your inbox.',
             loading: 'Sending reset link...',
             error: {
                 required: 'This field is required',
@@ -84,5 +84,41 @@ export const en = {
                 match: 'Passwords must match',
             },
         },
-    }
+    },
+
+
+    home: {
+        title: 'Welcome to ERP-Sys',
+        subtitle: 'Streamline Your Business Operations',
+        description: 'Mini ERP is a powerful and user-friendly platform designed to help businesses manage products, inventory, and user roles efficiently. With real-time stock tracking, multilingual support, and role-based access, take control of your operations today.',
+        features: {
+            title: 'Key Features',
+            authentication: 'Secure user authentication with role-based access for admins, managers, and users.',
+            products: 'Create and manage products with detailed attributes like SKU, price, and variants.',
+            inventory: 'Real-time inventory tracking with low stock alerts and movement history.',
+            dashboard: 'Insightful dashboard with product counts, inventory value, and low stock alerts.',
+            multilingual: 'Seamless support for English and French with persistent language preferences.',
+        },
+        valueProposition: {
+            title: 'Why Choose ERP-Sys?',
+            efficiency: {
+                title: 'Boost Efficiency',
+                description: 'Automate inventory and product management to save time and reduce errors.',
+            },
+            scalability: {
+                title: 'Scale with Ease',
+                description: 'Designed for businesses of all sizes, from startups to enterprises.',
+            },
+            support: {
+                title: 'Multilingual Support',
+                description: 'Operate seamlessly in English or French with intuitive translations.',
+            },
+        },
+        cta: {
+            signup: 'Get Started - Sign Up',
+            login: 'Log In to Your Account',
+            dashboard: 'Go to Dashboard',
+            ready: 'Ready to Transform Your Business?',
+        },
+    },
 };

@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { connectDB } from "./db-connector.js";
 import authRoutes from "./routes/auth/authRoutes.js";
+import productRoutes from "./routes/products/productRoutes.js";
 import fastifyJwt from "@fastify/jwt";
 
 
@@ -32,6 +33,8 @@ fastify.register(fastifyJwt, {
 
 // Register Routes
 fastify.register(authRoutes, { prefix: "/api/auth" });
+fastify.register(productRoutes, { prefix: "/api" });
+
 
 
 // Start Server

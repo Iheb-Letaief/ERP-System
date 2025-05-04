@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
     name: String,
     role: { type: String, enum: ['admin', 'manager', 'user'], default: 'user' },
     language: { type: String, default: 'en' },
+    permissions: [{ type: String }],
+
+
     resetToken: { type: String },
     resetTokenExpires: { type: Number },
 }, { timestamps: true });
