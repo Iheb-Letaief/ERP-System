@@ -17,7 +17,6 @@ const handler = NextAuth({
                 }
 
                 try {
-                    // Use existing login endpoint
                     const response = await axios.post(
                         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
                         {

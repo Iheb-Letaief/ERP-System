@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import crypto from "crypto";
+import {renderPasswordResetEmail, sendEmail} from "../../services/emailService.js";
 
 export default async function authRoutes(fastify) {
     // User signup
@@ -23,7 +24,8 @@ export default async function authRoutes(fastify) {
                 name,
                 email,
                 password: hashedPassword,
-                role: role === 'admin' ? 'admin' : 'user',
+                role: ['manager', 'admin', 'user'].includes(role) ? role : 'user',
+
             });
 
             await user.save();
@@ -58,8 +60,8 @@ export default async function authRoutes(fastify) {
         }
     });
 
-    // Password reset
-    fastify.post('/api/auth/reset-password', async (request, reply) => {
+    // Reset Password
+    fastify.post('/reset-password', async (request, reply) => {
         try {
             const { email, language } = request.body;
 
@@ -95,6 +97,39 @@ export default async function authRoutes(fastify) {
             return reply.send({ message: 'Password reset email sent' });
         } catch (error) {
             console.error('Reset password error:', error);
+            return reply.status(500).send({ message: 'Server error' });
+        }
+    });
+
+    // Update password
+    fastify.post('/update-password', async (request, reply) => {
+        try {
+            const { token, password } = request.body;
+
+            // Validate input
+            if (!token || !password) {
+                return reply.status(400).send({ message: 'Token and password are required' });
+            }
+
+            // Find user by token and check expiration
+            const user = await User.findOne({
+                resetToken: token,
+                resetTokenExpires: { $gt: Date.now() },
+            });
+
+            if (!user) {
+                return reply.status(400).send({ message: 'Invalid or expired token' });
+            }
+
+            // Update password
+            user.password = await bcrypt.hash(password, 10);
+            user.resetToken = undefined;
+            user.resetTokenExpires = undefined;
+            await user.save();
+
+            return reply.send({ message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Update password error:', error);
             return reply.status(500).send({ message: 'Server error' });
         }
     });

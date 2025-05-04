@@ -8,17 +8,9 @@ import path from "node:path";
 dotenv.config();
 
 const templates = {
-    todoShared: {
-        en: path.resolve("../src/app/templates/todoShared.en.mjml"),
-        fr: path.resolve("../src/app/templates/todoShared.fr.mjml"),
-    },
     passwordReset: {
-        en: path.resolve("../src/app/templates/passwordReset.en.mjml"),
-        fr: path.resolve("../src/app/templates/passwordReset.fr.mjml"),
-    },
-    todoUnshared: {
-        en: path.resolve("../src/app/templates/todoUnshared.en.mjml"),
-        fr: path.resolve("../src/app/templates/todoUnshared.fr.mjml"),
+        en: path.resolve("../frontend/src/app/templates/passwordReset.en.mjml"),
+        fr: path.resolve("../frontend/src/app/templates/passwordReset.fr.mjml"),
     },
 };
 
@@ -46,3 +38,35 @@ export const sendEmail = async (to, subject, html) => {
         console.error("Email sending failed:", error);
     }
 }
+
+
+const renderEmail = (templatePath, data) => {
+    try {
+        const mjmlTemplate = fs.readFileSync(templatePath, "utf-8");
+
+        // Replace placeholders
+        let mjmlContent = mjmlTemplate;
+
+        if (data.resetLink) {
+            mjmlContent = mjmlContent.replace("{{RESET_LINK}}", data.resetLink || "#");        }
+
+        const { html, errors } = mjml2html(mjmlContent, { validationLevel: "strict" });
+        if (errors.length) {
+            console.error(`MJML rendering errors for ${templatePath}:`, errors);
+        }
+
+        return html;
+    } catch (error) {
+        console.error(`Error rendering MJML template ${templatePath}:`, error);
+        throw error;
+    }
+};
+
+
+export const renderPasswordResetEmail = ({ resetLink, language = "en" }) => {
+    if (!["en", "fr"].includes(language)) language = "en";
+    const templatePath = templates.passwordReset[language];
+    const html = renderEmail(templatePath, { resetLink });
+    const subject = language === "fr" ? "Demande de réinitialisation de mot de passe - ERP-Sys" : "Password Reset Request - ERP-Sys";
+    return { html, subject };
+};
