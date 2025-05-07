@@ -121,4 +121,28 @@ export const en = {
             ready: 'Ready to Transform Your Business?',
         },
     },
+
+    Table: {
+        actions: "Actions",
+        noData: "No data available",
+        showing: "Showing",
+        of: "of",
+        items: "items",
+        previous: "Previous",
+        next: "Next",
+        page: "Page"
+    },
+    Sidebar: {
+        dashboard: "Dashboard",
+        products: "Products",
+        inventory: "Inventory",
+        userManagement: "User Management",
+        managePermissions: "Manage Permissions",
+        toggleNavigation: "Toggle Navigation",
+        user: "User",
+        toggleDarkMode: "Toggle Dark Mode",
+        toggleLanguage: "Switch Language",
+        logout: "Logout",
+        userMenu: "User Menu"
+    }
 };

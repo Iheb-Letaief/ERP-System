@@ -121,4 +121,28 @@ export const fr = {
             ready: 'Prêt à transformer votre entreprise ?',
         },
     },
+
+    Table: {
+        actions: "Actions",
+        noData: "Aucune donnée disponible",
+        showing: "Affichage",
+        of: "de",
+        items: "éléments",
+        previous: "Précédent",
+        next: "Suivant",
+        page: "Page"
+    },
+    Sidebar: {
+        dashboard: "Tableau de bord",
+        products: "Produits",
+        inventory: "Inventaire",
+        userManagement: "Gestion des utilisateurs",
+        managePermissions: "Gérer les permissions",
+        toggleNavigation: "Basculer la navigation",
+        user: "Utilisateur",
+        toggleDarkMode: "Basculer le mode sombre",
+        toggleLanguage: "Changer de langue",
+        logout: "Déconnexion",
+        userMenu: "Menu utilisateur"
+    }
 };

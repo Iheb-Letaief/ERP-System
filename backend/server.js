@@ -4,6 +4,8 @@ import cors from "@fastify/cors";
 import { connectDB } from "./db-connector.js";
 import authRoutes from "./routes/auth/authRoutes.js";
 import productRoutes from "./routes/products/productRoutes.js";
+import inventoryRoutes from "./routes/inventory/inventoryRoutes.js";
+import dashboardRoutes from "./routes/dashboard/dashboardRoutes.js";
 import fastifyJwt from "@fastify/jwt";
 
 
@@ -34,7 +36,8 @@ fastify.register(fastifyJwt, {
 // Register Routes
 fastify.register(authRoutes, { prefix: "/api/auth" });
 fastify.register(productRoutes, { prefix: "/api" });
-
+fastify.register(inventoryRoutes, { prefix: "/api" });
+fastify.register(dashboardRoutes, { prefix: "/api" });
 
 
 // Start Server

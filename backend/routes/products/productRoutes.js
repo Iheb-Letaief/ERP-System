@@ -1,26 +1,8 @@
 import Product from '../../models/Product.js';
 import * as yup from 'yup';
-import verifyJWT from '../auth/middleware.js';
+import { verifyJWT, restrictTo, checkPermissions } from '../auth/middleware.js';
 
-// Role-based access control middleware
-const restrictTo = (roles) => {
-    return async (request, reply) => {
-        const user = request.user;
-        if (!roles.includes(user.role)) {
-            return reply.code(403).send({ error: 'Forbidden: Insufficient permissions' });
-        }
-    };
-};
 
-// Permission check middleware for users
-const checkPermissions = (permissions) => {
-    return async (request, reply) => {
-        const user = await require('../../models/User').findById(request.user.id);
-        if (user.role === 'user' && !permissions.every(perm => user.permissions.includes(perm))) {
-            return reply.code(403).send({ error: 'Forbidden: Insufficient permissions' });
-        }
-    };
-};
 
 // Validation schemas
 const createProductSchema = yup.object({
@@ -175,7 +157,7 @@ export default async function productRoutes(fastify) {
     fastify.delete('/products/:id', {
         preHandler: [
             verifyJWT,
-            restrictTo(['admin'])
+            restrictTo(['admin', 'manager'])
         ],
     }, async (request, reply) => {
         try {
