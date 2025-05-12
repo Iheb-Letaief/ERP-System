@@ -10,6 +10,7 @@ import {Providers} from "@/app/providers";
 // import DarkModeToggle from "@/components/DarkModeToggle";
 // import TranslationToggle from "@/components/ToggleTranslationButton";
 import { useEffect, useState } from "react";
+import DarkModeToggle from "@/app/components/DarkModeToggle";
 
 
 const geistSans = Geist({
@@ -57,22 +58,22 @@ export default function RootLayout({
 
 
     return (
-        <html lang="en" >
-            {/*data-bs-theme={darkMode ? 'dark' : 'light'}*/}
+        <html lang="en" data-bs-theme={darkMode ? 'dark' : 'light'} >
+
             <head>
                 <meta charSet="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <Providers>
-                    {/*{mounted && (*/}
-                    {/*    <div className="absolute top-4 right-4 z-50">*/}
-                    {/*        <div className="space-x-3">*/}
-                    {/*            <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />*/}
-                    {/*            <TranslationToggle/>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
+                    {mounted && (
+                        <div className="absolute top-4 right-4 z-50">
+                            <div className="space-x-3">
+                                {/*<DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />*/}
+                                {/*<TranslationToggle/>*/}
+                            </div>
+                        </div>
+                    )}
                     {children}
                 </Providers>
             </body>

@@ -94,7 +94,7 @@ export default function Home() {
             </section>
 
             {/* Value Proposition Section */}
-            <section className="bg-light py-5">
+            <section className="py-5">
                 <div className="container">
                     <h3 className="text-center mb-5">{t('home.valueProposition.title')}</h3>
                     <div className="row g-4">
@@ -110,7 +110,7 @@ export default function Home() {
                                           {value.icon}
                                         </span>
                                         <h4 className="mb-2">{t(`home.valueProposition.${value.key}.title`)}</h4>
-                                        <p className="text-muted">{t(`home.valueProposition.${value.key}.description`)}</p>
+                                        <p>{t(`home.valueProposition.${value.key}.description`)}</p>
                                     </div>
                                 </div>
                             </div>
