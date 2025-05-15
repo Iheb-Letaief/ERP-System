@@ -5,6 +5,7 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../components/Sidebar';
 import '../globals.css';
+import LogoutButton from "@/app/components/LogoutButton";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -54,9 +55,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
                             : "user")
                     } : null
                 }
-            />            <main className="content">
+            />
+            <main className="content">
                 <div className="container-fluid p-0">{children}</div>
             </main>
+            <LogoutButton />
+
         </div>
     );
 };

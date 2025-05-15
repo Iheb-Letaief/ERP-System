@@ -91,12 +91,16 @@ export default async function productRoutes(fastify) {
         preHandler: [
             verifyJWT,
             restrictTo(['admin', 'manager', 'user']),
-            checkPermissions(['view_products']),
+            checkPermissions(['view_products'])
         ],
     }, async (request, reply) => {
         try {
-            const products = await Product.find({}).lean();
-            return reply.send(products);
+            const { page = 1, pageSize = 10, sortKey = 'name', sortDirection = 'asc' } = request.query;
+            const skip = (page - 1) * pageSize;
+            const sort = { [sortKey]: sortDirection === 'asc' ? 1 : -1 };
+            const products = await Product.find({}).sort(sort).skip(skip).limit(pageSize).lean();
+            const total = await Product.countDocuments({});
+            return reply.send({ products, total });
         } catch (err) {
             console.error('Fetch products error:', err);
             return reply.code(500).send({ error: 'Failed to fetch products', details: err.message });

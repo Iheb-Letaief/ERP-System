@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 
 interface Column<T> {
@@ -15,6 +15,7 @@ interface Action<T> {
     color?: string;
     href?: (row: T) => string;
     onClick?: (event: React.MouseEvent, row: T) => void;
+    visible?: (row: T, userRole: string) => boolean;
 }
 
 interface Pagination {
@@ -31,20 +32,20 @@ interface DynamicTableProps<T> {
     defaultSort?: { key: string; direction: 'asc' | 'desc' };
     pagination?: Pagination;
     onPageChange?: (page: number) => void;
-    locale: string;
+    userRole: string;
 }
 
 const DynamicTable = <T extends Record<string, any>>({
-                                                     data = [],
-                                                     columns = [],
-                                                     actions = [],
-                                                     onSort,
-                                                     defaultSort = { key: '', direction: 'asc' },
-                                                     pagination = { page: 1, pageSize: 10, total: 0 },
-                                                     onPageChange,
-                                                     locale,
-                                                 }: DynamicTableProps<T>) => {
-    const t = useTranslations('Table');
+                                                         data = [],
+                                                         columns = [],
+                                                         actions = [],
+                                                         onSort,
+                                                         defaultSort = { key: '', direction: 'asc' },
+                                                         pagination = { page: 1, pageSize: 10, total: 0 },
+                                                         onPageChange,
+                                                         userRole,
+                                                     }: DynamicTableProps<T>) => {
+    const { t } = useTranslation('Table');
     const [sort, setSort] = useState(defaultSort);
 
     const handleSort = (key: string) => {
@@ -68,14 +69,15 @@ const DynamicTable = <T extends Record<string, any>>({
                                     onClick={() => col.sortable && handleSort(col.key as string)}
                                     style={col.sortable ? { cursor: 'pointer' } : {}}
                                     className="text-nowrap"
+                                    aria-sort={sort.key === col.key ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                                 >
                                     {col.label}
                                     {col.sortable && sort.key === col.key && (
-                                        <span>{sort.direction === 'asc' ? ' ↑' : ' ↓'}</span>
+                                        <span aria-hidden="true">{sort.direction === 'asc' ? ' ↑' : ' ↓'}</span>
                                     )}
                                 </th>
                             ))}
-                            {actions.length > 0 && <th>{t('actions')}</th>}
+                            {actions.length > 0 && <th className="text-nowrap">{t('actions')}</th>}
                         </tr>
                         </thead>
                         <tbody>
@@ -87,36 +89,40 @@ const DynamicTable = <T extends Record<string, any>>({
                             </tr>
                         ) : (
                             data.map((row, index) => (
-                                <tr key={row.id || index}>
+                                <tr key={row._id || index}>
                                     {columns.map((col) => (
                                         <td key={col.key as string}>
-                                            {col.render ? col.render(row[col.key], row) : row[col.key]}
+                                            {col.render ? col.render(row[col.key], row) : row[col.key] ?? '-'}
                                         </td>
                                     ))}
                                     {actions.length > 0 && (
                                         <td>
                                             <div className="btn-list flex-nowrap">
-                                                {actions.map((action, idx) => (
-                                                    action.href ? (
-                                                        <Link
-                                                            key={idx}
-                                                            href={action.href(row)}
-                                                            className={`btn btn-sm btn-${action.color || 'primary'}`}
-                                                            title={action.label}
-                                                        >
-                                                            <i className={`ti ti-${action.icon}`}></i>
-                                                        </Link>
-                                                    ) : (
-                                                        <button
-                                                            key={idx}
-                                                            className={`btn btn-sm btn-${action.color || 'primary'}`}
-                                                            onClick={(e) => action.onClick && action.onClick(e, row)}
-                                                            title={action.label}
-                                                        >
-                                                            <i className={`ti ti-${action.icon}`}></i>
-                                                        </button>
-                                                    )
-                                                ))}
+                                                {actions
+                                                    .filter((action) => !action.visible || action.visible(row, userRole))
+                                                    .map((action, idx) => (
+                                                        action.href ? (
+                                                            <Link
+                                                                key={idx}
+                                                                href={action.href(row)}
+                                                                className={`btn btn-sm btn-${action.color || 'primary'} me-1`}
+                                                                title={action.label}
+                                                                aria-label={action.label}
+                                                            >
+                                                                <i className={`ti ti-${action.icon}`}></i>
+                                                            </Link>
+                                                        ) : (
+                                                            <button
+                                                                key={idx}
+                                                                className={`btn btn-sm btn-${action.color || 'primary'} me-1`}
+                                                                onClick={(e) => action.onClick && action.onClick(e, row)}
+                                                                title={action.label}
+                                                                aria-label={action.label}
+                                                            >
+                                                                <i className={`ti ti-${action.icon}`}></i>
+                                                            </button>
+                                                        )
+                                                    ))}
                                             </div>
                                         </td>
                                     )}
@@ -140,7 +146,8 @@ const DynamicTable = <T extends Record<string, any>>({
                                 disabled={pagination.page === 1}
                                 aria-label={t('previous')}
                             >
-                                {t('previous')}
+                                <span aria-hidden="true">«</span>
+                                <span className="sr-only">{t('previous')}</span>
                             </button>
                         </li>
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -161,7 +168,8 @@ const DynamicTable = <T extends Record<string, any>>({
                                 disabled={pagination.page === totalPages}
                                 aria-label={t('next')}
                             >
-                                {t('next')}
+                                <span aria-hidden="true">»</span>
+                                <span className="sr-only">{t('next')}</span>
                             </button>
                         </li>
                     </ul>
